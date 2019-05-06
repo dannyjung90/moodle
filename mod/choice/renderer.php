@@ -112,16 +112,16 @@ class mod_choice_renderer extends plugin_renderer_base {
      * @param bool $forcepublish
      * @return string
      */
-    public function display_result($choices, $forcepublish = false) {
+    public function display_result($choices, $forcepublish = CHOICE_PUBLISH_ANONYMOUS) {
         if (empty($forcepublish)) { //allow the publish setting to be overridden
             $forcepublish = $choices->publish;
         }
 
         $displaylayout = $choices->display;
 
-        if ($forcepublish) {  //CHOICE_PUBLISH_NAMES
+        if ($forcepublish == CHOICE_PUBLISH_NAMES) {
             return $this->display_publish_name_vertical($choices);
-        } else {
+        } else { // CHOICE_PUBLISH_ANONYMOUS, CHOICE_PUBLISH_ANONYMOUS_TO_STUDENTS.
             return $this->display_publish_anonymous($choices, $displaylayout);
         }
     }

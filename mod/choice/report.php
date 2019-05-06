@@ -264,10 +264,20 @@
     }
     $results = prepare_choice_show_results($choice, $course, $cm, $users);
     $renderer = $PAGE->get_renderer('mod_choice');
-    echo $renderer->display_result($results, true);
 
-   //now give links for downloading spreadsheets.
-    if (!empty($users) && has_capability('mod/choice:downloadresponses',$context)) {
+    if ($results->publish == CHOICE_PUBLISH_ANONYMOUS) {
+        echo $renderer->display_result($results);
+    } else {
+        echo $renderer->display_result($results, has_capability('mod/choice:readresponses', $context));
+    }
+
+    // Now give links for downloading spreadsheets.
+    // Only show download links if results are not being published or results
+    // are not anonymous.
+    $showlinks = $results->showresults == CHOICE_SHOWRESULTS_NOT
+            || ($results->showresults != CHOICE_SHOWRESULTS_NOT
+            && $results->publish != CHOICE_PUBLISH_ANONYMOUS);
+    if (!empty($users) && has_capability('mod/choice:downloadresponses', $context) && $showlinks) {
         $downloadoptions = array();
         $options = array();
         $options["id"] = "$cm->id";
